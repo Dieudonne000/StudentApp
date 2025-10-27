@@ -1,21 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
-import { Student, getStudents, deleteStudent } from '../../db/database';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { getStudents, deleteStudent } from '../services/studentService';
 
-type RootStackParamList = {
-  Home: undefined;
-  AddStudent: undefined;
-  EditStudent: { student: Student };
-};
+export default function HomeScreen({ navigation }: any) {
+  const [students, setStudents] = useState<any[]>([]);
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
-
-export default function HomeScreen({ navigation }: Props) {
-  const [students, setStudents] = useState<Student[]>([]);
-
-  const fetchStudents = () => {
-    getStudents(data => setStudents(data));
+  const fetchStudents = async () => {
+    const data = await getStudents();
+    setStudents(data);
   };
 
   useEffect(() => {
@@ -23,10 +15,9 @@ export default function HomeScreen({ navigation }: Props) {
     return unsubscribe;
   }, [navigation]);
 
-  const handleDelete = (id: number) => {
-    deleteStudent(id, success => {
-      if (success) fetchStudents();
-    });
+  const handleDelete = async (id: number) => {
+    await deleteStudent(id);
+    fetchStudents();
   };
 
   return (
@@ -54,12 +45,6 @@ export default function HomeScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, marginTop: 40 },
   title: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
-  item: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#aaa',
-    borderRadius: 5,
-    marginVertical: 5,
-  },
+  item: { padding: 10, borderWidth: 1, borderColor: '#aaa', borderRadius: 5, marginVertical: 5 },
   buttons: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 },
 });

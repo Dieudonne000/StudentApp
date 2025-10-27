@@ -3,5 +3,11 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
+  },
+  "debug.openDebug": "neverOpen",
+  "tasks": {
+    "label": "lint on open",
+    "type": "shell",
+    "command": "npm run lint"
   }
 }
