@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { updateStudent, Student } from '../../db/database';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { updateStudent } from '../services/studentService';
 
-type RootStackParamList = {
-  EditStudent: { student: Student };
-};
-
-type Props = NativeStackScreenProps<RootStackParamList, 'EditStudent'>;
-
-export default function EditStudentScreen({ route, navigation }: Props) {
+export default function EditStudentScreen({ route, navigation }: any) {
   const { student } = route.params;
   const [name, setName] = useState(student.name);
   const [age, setAge] = useState(String(student.age));
   const [course, setCourse] = useState(student.course);
 
-  const handleUpdate = () => {
-    updateStudent(student.id, name, parseInt(age), course, success => {
-      if (success) navigation.goBack();
-    });
+  const handleUpdate = async () => {
+    await updateStudent(student.id, { name, age: parseInt(age), course });
+    navigation.goBack();
   };
 
   return (
@@ -35,11 +27,5 @@ export default function EditStudentScreen({ route, navigation }: Props) {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, marginTop: 40 },
   title: { fontSize: 22, fontWeight: 'bold', marginBottom: 10 },
-  input: {
-    borderWidth: 1,
-    borderColor: '#aaa',
-    borderRadius: 5,
-    padding: 10,
-    marginVertical: 5,
-  },
+  input: { borderWidth: 1, borderColor: '#aaa', borderRadius: 5, padding: 10, marginVertical: 5 },
 });
